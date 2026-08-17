@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Which Pony Are You?</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap');
+*{box-sizing:border-box}
+body{
+ margin:0;min-height:100vh;font-family:Fredoka,Arial,sans-serif;color:#655778;
+ background:linear-gradient(160deg,#c9f5ff 0%,#eadbff 52%,#ffd9ec 100%);
+ overflow-x:hidden;
+}
+body:before,body:after{
+ content:"";position:fixed;border-radius:50%;background:#fff8;filter:blur(2px);
+ z-index:-1;
+}
+body:before{width:230px;height:80px;left:-60px;top:12%;box-shadow:40px 25px 0 5px #fff6}
+body:after{width:260px;height:90px;right:-70px;top:58%;box-shadow:-45px 20px 0 4px #fff6}
+.container{width:min(900px,94%);margin:auto;padding:25px 0 45px}
+header{text-align:center;padding:8px 0 18px}
+.logo{font-size:clamp(2.3rem,9vw,4.5rem);font-weight:700;color:#fff;
+ text-shadow:0 4px 0 #a887d2,0 7px 18px #80669b55}
+.subtitle{font-size:1.05rem;color:#775f8e}
+.glass{
+ background:#ffffff75;border:2px solid #fff9;border-radius:32px;
+ box-shadow:0 18px 45px #80639a22;backdrop-filter:blur(16px);
+}
+.intro{text-align:center;padding:22px;margin-bottom:18px}
+.intro h2{margin:0 0 7px;color:#8d67b4}
+.intro p{margin:0}
+.quiz{padding:24px}
+.quiz h2{text-align:center;color:#8d67b4;margin:0 0 22px}
+.question{margin:0 0 23px}
+.question-title{font-weight:600;margin-bottom:10px}
+.options{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.option{
+ border:2px solid #fff9;background:#fff8;border-radius:18px;padding:12px;
+ text-align:center;cursor:pointer;transition:.22s;font-size:1rem
+}
+.option:hover{transform:translateY(-3px);background:#fff}
+.option.selected{background:#e4d2ff;border-color:#a979cf;transform:scale(1.02)}
+button{
+ display:block;width:min(410px,94%);margin:20px auto 0;padding:16px 20px;
+ border:0;border-radius:50px;font:700 1.18rem Fredoka,Arial,sans-serif;
+ color:white;background:linear-gradient(90deg,#ad86dc,#e994c6,#83cbe7);
+ box-shadow:0 10px 25px #8d67b444;cursor:pointer;transition:.2s
+}
+button:hover{transform:translateY(-3px)}
+button:active{transform:scale(.97)}
+.result{display:none;text-align:center;margin-top:18px;padding:28px;animation:appear .75s ease}
+.result.show{display:block}
+@keyframes appear{from{opacity:0;transform:translateY(35px) scale(.92)}to{opacity:1;transform:none}}
+.pony{
+ width:205px;height:205px;margin:auto;border-radius:50%;
+ display:flex;align-items:center;justify-content:center;
+ position:relative;box-shadow:inset 0 0 35px #fff,0 15px 35px #765b8a22;
+ animation:float 3s ease-in-out infinite
+}
+@keyframes float{50%{transform:translateY(-9px) rotate(2deg)}}
+.pony .body{font-size:7rem;filter:drop-shadow(0 8px 6px #5553)}
+.pony .spark{position:absolute;font-size:2rem;animation:twinkle 1.3s infinite}
+.pony .s1{top:20px;left:28px}.pony .s2{right:25px;bottom:35px;animation-delay:.35s}
+@keyframes twinkle{50%{transform:scale(1.35) rotate(15deg);opacity:.65}}
+.result h2{font-size:2.15rem;color:#875eb3;margin:15px 0 5px}
+.result h3{margin:0 0 12px;color:#9877aa}
+.result p{max-width:620px;margin:auto;line-height:1.6}
+.badge{display:inline-block;margin-top:15px;padding:8px 18px;border-radius:30px;background:#fff9}
+.magic{position:fixed;inset:0;pointer-events:none;z-index:10;display:none}
+.magic.active{display:block}
+.star{position:absolute;font-size:25px;animation:fly 1.3s ease-out forwards}
+@keyframes fly{to{opacity:0;transform:translate(var(--dx),var(--dy)) scale(1.5) rotate(360deg)}}
+footer{text-align:center;margin-top:22px;font-size:.82rem;opacity:.65}
+@media(max-width:600px){.options{grid-template-columns:1fr}.pony{width:175px;height:175px}.pony .body{font-size:6rem}}
+</style>
+</head>
+<body>
+<div id="magic" class="magic"></div>
+<div class="container">
+<header>
+ <div class="logo">🦄 My Little Pony</div>
+ <div class="subtitle">✨ Which Pony Are You? ✨</div>
+</header>
+
+<section class="intro glass">
+ <h2>Discover Your Pony! 🌈</h2>
+ <p>Answer three magical questions and find the pony that matches your personality.</p>
+</section>
+
+<section class="quiz glass">
+<h2>💫 Tell us about yourself 💫</h2>
+
+<div class="question">
+ <div class="question-title">1. What do you enjoy most?</div>
+ <div class="options">
+  <div class="option" data-score="rainbow">🏃 Adventure</div>
+  <div class="option" data-score="pinkie">🎉 Having fun</div>
+  <div class="option" data-score="rarity">🎨 Being creative</div>
+  <div class="option" data-score="twilight">📚 Learning</div>
+ </div>
+</div>
+
+<div class="question">
+ <div class="question-title">2. What is your best quality?</div>
+ <div class="options">
+  <div class="option" data-score="fluttershy">💗 Kind</div>
+  <div class="option" data-score="applejack">🍎 Honest</div>
+  <div class="option" data-score="rainbow">💪 Brave</div>
+  <div class="option" data-score="pinkie">😂 Funny</div>
+ </div>
+</div>
+
+<div class="question">
+ <div class="question-title">3. Pick a color!</div>
+ <div class="options">
+  <div class="option" data-score="twilight">💜 Purple</div>
+  <div class="option" data-score="rainbow">🌈 Blue</div>
+  <div class="option" data-score="pinkie">💗 Pink</div>
+  <div class="option" data-score="applejack">💛 Yellow</div>
+ </div>
+</div>
+
+<button id="find">✨ FIND MY PONY! ✨</button>
+</section>
+
+<section id="result" class="result glass">
+ <div id="pony" class="pony">
+  <div id="ponyBody" class="body">🦄</div>
+  <div class="spark s1">✨</div><div class="spark s2">💫</div>
+ </div>
+ <h2 id="name"></h2>
+ <h3 id="title"></h3>
+ <p id="desc"></p>
+ <div id="element" class="badge"></div>
+ <button onclick="location.reload()">🔄 TRY AGAIN</button>
+</section>
+
+<footer>Made with ✨ friendship & magic ✨</footer>
+</div>
+
+<script>
+const ponies={
+ twilight:{name:"Twilight Sparkle",title:"The Magical Learner 📚",
+ desc:"You are intelligent, curious and always ready to learn something new. You love discovering how things work and helping your friends with what you know.",
+ element:"✨ Element of Magic",emoji:"🦄",bg:"linear-gradient(135deg,#d9c9ff,#b7d9ff)"},
+ rainbow:{name:"Rainbow Dash",title:"The Adventurer 🌈",
+ desc:"You are brave, energetic and always ready for an adventure. You never give up on your friends and you love a good challenge.",
+ element:"💙 Element of Loyalty",emoji:"🌈",bg:"linear-gradient(135deg,#b9eaff,#a9c9ff)"},
+ pinkie:{name:"Pinkie Pie",title:"The Party Pony 🎉",
+ desc:"You are cheerful, energetic and love making people smile. You bring fun wherever you go and know how to turn an ordinary day into a party.",
+ element:"💗 Element of Laughter",emoji:"🎀",bg:"linear-gradient(135deg,#ffd0e5,#ffc0d8)"},
+ applejack:{name:"Applejack",title:"The Honest Friend 🍎",
+ desc:"You are honest, dependable and hardworking. Your friends know they can always count on you when things get difficult.",
+ element:"🍎 Element of Honesty",emoji:"🍎",bg:"linear-gradient(135deg,#ffe6a8,#ffd0a8)"},
+ rarity:{name:"Rarity",title:"The Creative Star 💎",
+ desc:"You are creative, stylish and generous. You love making beautiful things and helping the people around you feel special.",
+ element:"💎 Element of Generosity",emoji:"💎",bg:"linear-gradient(135deg,#e7d2ff,#d6c3ff)"},
+ fluttershy:{name:"Fluttershy",title:"The Kind Heart 🦋",
+ desc:"You are gentle, caring and incredibly kind. You may be quiet sometimes, but you always stand up for the people and creatures you love.",
+ element:"🦋 Element of Kindness",emoji:"🦋",bg:"linear-gradient(135deg,#fff1a9,#ffd5e5)"}
+};
+
+const selected=[];
+document.querySelectorAll(".option").forEach(o=>{
+ o.onclick=()=>{
+  const q=o.closest(".question");
+  q.querySelectorAll(".option").forEach(x=>x.classList.remove("selected"));
+  o.classList.add("selected");
+  selected[q.dataset.q||[...document.querySelectorAll(".question")].indexOf(q)]=o.dataset.score;
+ };
+});
+
+document.getElementById("find").onclick=()=>{
+ const counts={};
+ selected.filter(Boolean).forEach(x=>counts[x]=(counts[x]||0)+1);
+ let winner;
+ if(!selected.filter(Boolean).length){
+  const keys=Object.keys(ponies); winner=keys[Math.floor(Math.random()*keys.length)];
+ }else{
+  const max=Math.max(...Object.values(counts));
+  const best=Object.keys(counts).filter(k=>counts[k]===max);
+  winner=best[Math.floor(Math.random()*best.length)];
+ }
+ magic();
+ const btn=document.getElementById("find");
+ btn.disabled=true;btn.textContent="✨ MAGIC IS HAPPENING... ✨";
+ setTimeout(()=>show(winner),1100);
+};
+
+function show(key){
+ const p=ponies[key];
+ document.getElementById("ponyBody").textContent=p.emoji;
+ document.getElementById("pony").style.background=p.bg;
+ document.getElementById("name").textContent=p.name;
+ document.getElementById("title").textContent=p.title;
+ document.getElementById("desc").textContent=p.desc;
+ document.getElementById("element").textContent=p.element;
+ document.getElementById("result").classList.add("show");
+ document.getElementById("result").scrollIntoView({behavior:"smooth"});
+}
+
+function magic(){
+ const box=document.getElementById("magic");box.innerHTML="";box.classList.add("active");
+ const s=["✨","⭐","💖","🌈","💫","🦄"];
+ for(let i=0;i<36;i++){
+  const x=document.createElement("div");x.className="star";x.textContent=s[Math.floor(Math.random()*s.length)];
+  x.style.left=Math.random()*100+"vw";x.style.top=Math.random()*100+"vh";
+  x.style.setProperty("--dx",(Math.random()-.5)*100+"vw");
+  x.style.setProperty("--dy",(Math.random()-.5)*100+"vh");
+  x.style.animationDelay=Math.random()*.25+"s";box.appendChild(x);
+ }
+ setTimeout(()=>box.classList.remove("active"),1400);
+}
+</script>
+</body>
+</html>
